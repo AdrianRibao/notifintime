@@ -43,5 +43,6 @@ setup(
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
     install_requires=[
+        'pyzmq',
     ],
 )
