@@ -1,0 +1,4 @@
+recursive-include docs *
+recursive-include notifintime/locale *
+recursive-include notifintime/templates *
+prune docs/build
