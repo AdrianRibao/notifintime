@@ -44,5 +44,9 @@ setup(
     classifiers=CLASSIFIERS,
     install_requires=[
         'pyzmq',
+        #'pynliner',
+        #'cssutils',
+        'premailer',
+        'cssselect',
     ],
 )

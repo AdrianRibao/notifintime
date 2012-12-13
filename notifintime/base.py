@@ -65,7 +65,6 @@ class NotificationBase(object):
         Process the message
         """
         message = json.loads(message)
-        print message
         return message
 
     def receive(self, backend_name, *args, **kwargs):

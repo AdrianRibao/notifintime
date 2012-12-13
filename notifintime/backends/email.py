@@ -4,10 +4,18 @@ from django.core.mail import EmailMultiAlternatives
 from django.template import Context, loader
 import html2text
 import json
+#import pynliner
+from premailer import Premailer
 #from django.template.loader import get_template
 
 
 class EmailBackend(NotificationBackendBase):
+    """
+    Requires:
+
+    * subject
+    * template_name
+    """
     name = 'email'
 
     def __init__(self, subject, template_name, *args, **kwargs):
@@ -18,10 +26,11 @@ class EmailBackend(NotificationBackendBase):
     def render_template_email(self, data):
         template = loader.get_template(self.template_name)
         json_data = json.loads(data)[0]
-        #import pdb
-        #pdb.set_trace()
         render = template.render(Context(json_data))
-        return render
+        #output = pynliner.fromString(render)
+        p = Premailer(render)
+        output = p.transform()
+        return output
 
     def convert_email_to_text(self, html):
         h = html2text.HTML2Text()

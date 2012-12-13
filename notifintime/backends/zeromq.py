@@ -7,7 +7,6 @@ if NOTIFINTIME_GREEN:
 else:
     import zmq
 
-
 class ZeroMQBackend(NotificationBackendBase):
     name = 'zeromq'
 
