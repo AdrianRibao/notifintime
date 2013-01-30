@@ -26,13 +26,15 @@ class ZeroMQBackend(NotificationBackendBase):
         pub = context.socket(zmq.PUB)
         pub.connect(self.pub_url)
 
-        if self.channels:
-            for channel in self.channels:
-                processed_data = u'%s %s' % (channel, data)
-                pub.send_unicode(processed_data)
-        else:
-                processed_data = u'%s' % (data)
-                pub.send_unicode(processed_data)
+        #print "Sending", self.channels + [str(data), ]
+        pub.send_multipart(self.channels + [str(data), ])
+        #if self.channels:
+            #for channel in self.channels:
+                #processed_data = u'%s %s' % (channel, data)
+                #pub.send_unicode(processed_data)
+        #else:
+                #processed_data = u'%s' % (data)
+                #pub.send_unicode(processed_data)
 
     def receive(self, *args, **kwargs):
 
@@ -40,15 +42,22 @@ class ZeroMQBackend(NotificationBackendBase):
         receiver = context.socket(zmq.SUB)
         receiver.connect(self.receiver_url)
 
-        if self.channels:
-            for channel in self.channels:
-                receiver.setsockopt(zmq.SUBSCRIBE, str(channel))
-            channel, message = receiver.recv_unicode().split(' ', 1)
-        else:
-            receiver.setsockopt(zmq.SUBSCRIBE, '')
-            message = receiver.recv_unicode()
+        # This match like OR
+        for channel in self.channels:
+            receiver.setsockopt(zmq.SUBSCRIBE, channel)
+        #receiver.setsockopt(zmq.SUBSCRIBE, ''.join(self.channels))
+        message = receiver.recv_multipart()
+        message = message[-1]
+
+        #if self.channels:
+            #for channel in self.channels:
+                #receiver.setsockopt(zmq.SUBSCRIBE, str(channel))
+            #channel, message = receiver.recv_unicode().split(' ', 1)
+        #else:
+            #receiver.setsockopt(zmq.SUBSCRIBE, '')
+            #message = receiver.recv_unicode()
         
         return message
 
     def subscribe(self, channel):
-        self.channels.append(channel)
+        self.channels.append(str(channel))

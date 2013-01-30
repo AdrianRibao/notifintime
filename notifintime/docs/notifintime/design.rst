@@ -9,14 +9,14 @@ pip install notifications
 Setup
 =====
 
-Add to installed apps
+Add `notifintime` to installed apps
 
 Getting started
 ===============
 
 Create a file named `notifications`
 
-Create class that extends `notifications.Notification`
+Create class that extends `notifintime.Notification`
 
 Register the Notification
 

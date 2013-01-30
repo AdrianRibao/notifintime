@@ -25,8 +25,7 @@ class EmailBackend(NotificationBackendBase):
 
     def render_template_email(self, data):
         template = loader.get_template(self.template_name)
-        json_data = json.loads(data)[0]
-        render = template.render(Context(json_data))
+        render = template.render(Context(data))
         #output = pynliner.fromString(render)
         p = Premailer(render)
         output = p.transform()
@@ -44,10 +43,12 @@ class EmailBackend(NotificationBackendBase):
         Sends an email with data as a context for the template.
         """
         recipients = kwargs.get('to', [])
-        html_content = self.render_template_email(data)
+        json_data = json.loads(data)[0]
+        html_content = self.render_template_email(json_data)
         text_content = self.convert_email_to_text(html_content)
+        subject = self.subject.format(**json_data)
         msg = EmailMultiAlternatives(
-                subject=self.subject,
+                subject=subject,
                 body=text_content,
                 to=recipients)
         msg.attach_alternative(html_content, "text/html")
